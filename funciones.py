@@ -9,23 +9,23 @@ def list_ciu_radar(arbol1,arbol2):
 		prov=arbol2.xpath('//provincia[@id="{}"]/text()'.format(cod2))
 		nomprov=prov[0]
 		carreteras=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA/DENOMINACION/text()'.format(cod1))
-		dict1[nomprov[0]]={}
+		dict1[nomprov]={}
 		for carretera in carreteras:
 			dict1[nomprov][carretera]={}
 			dict1[nomprov][carretera]["PI"]={}
 			pipk=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/PK/text()'.format(cod1,carretera))
-			dict1[nomprov][carretera]["PI"]["PK"]=pipk
+			dict1[nomprov][carretera]["PI"]["PK"]=pipk[0]
 			pilat=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/LATITUD/text()'.format(cod1,carretera))
-			dict1[nomprov][carretera]["PI"]["LAT"]=pilat
+			dict1[nomprov][carretera]["PI"]["LAT"]=pilat[0]
 			pilon=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/LONGITUD/text()'.format(cod1,carretera))
-			dict1[nomprov][carretera]["PI"]["LON"]=pilon
+			dict1[nomprov][carretera]["PI"]["LON"]=pilon[0]
 			dict1[nomprov][carretera]["PF"]={}
 			pfpk=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_FINAL/PK/text()'.format(cod1,carretera))
-			dict1[nomprov][carretera]["PF"]["PK"]=pfpk
+			dict1[nomprov][carretera]["PF"]["PK"]=pfpk[0]
 			pflat=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_FINAL/LATITUD/text()'.format(cod1,carretera))
-			dict1[nomprov][carretera]["PF"]["LAT"]=pflat
+			dict1[nomprov][carretera]["PF"]["LAT"]=pflat[0]
 			pflon=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_FINAL/LONGITUD/text()'.format(cod1,carretera))
-			dict1[nomprov][carretera]["PF"]["LON"]=pflon
+			dict1[nomprov][carretera]["PF"]["LON"]=pflon[0]
 	return dict1
 
 

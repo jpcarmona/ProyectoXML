@@ -1,12 +1,12 @@
 # ProyectoXML
 Proyecto de Lenguaje de Marcas de XML
 
-1.Listar ciudades y radares
+1.Pedir provincia por teclado y lista sus radares. 
 
-2.Contar ciudades y radares
+2.Pedir provincia por teclado y cuenta sus radares.
 
-3.Buscar ciudades por la que pase una carretera y muestre radares
+3.Pedir por teclado una carretera, muestra las provincias por la que pasa y sus respectivos radares.
 
-4.Buscar una ciudad y muestra sus radares, Busca una carretera y muestra sus radares
+4.Pedir por teclado provincia y carretera y muestra el radar.
 
-5.Mostrar las coordenadas de los radares que tienen una carretera
+5.Pedir por teclado una carretera, cuenta los radares que tiene y muestra las coordenadas de los radares.(Intentaré que se abra el google maps indicando los radares)

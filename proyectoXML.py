@@ -1,25 +1,37 @@
 from lxml import etree
-from funciones import list_ciu_radar
+from funciones import menuxml,provincia_existe,get_cod_prov,dict_radar,list_ciu_radar
 
 arbol1=etree.parse("radares.xml")
 arbol2=etree.parse("provincias.xml")
 
-dict1=list_ciu_radar(arbol1,arbol2)
+opcion=menuxml()
 
-for provincia in dict1.keys():
-	print(provincia)
-	print("")
-	for carretera in dict1[provincia].keys():
-		print(carretera)
-		print("")
-		carr=dict1[provincia][carretera]
-		print("Punto Inicial:")
-		print(carr["PI"]["PK"],carr["PI"]["LAT"],carr["PI"]["LON"])
-		print("Punto Final:")
-		print(carr["PF"]["PK"],carr["PF"]["LAT"],carr["PF"]["LON"])
-		print("")
-	print("")
+while opcion!="0":
+	if opcion==1:
+		provincia="1"
+		while provincia!="0"
+			provincia=input("¿Provincia?(\"0\" para salir)")
+			if not provincia_existe(arbol2,provincia):
+				print("No existe la provincia, inténtelo de nuevo")	
+			else:
+				prov=provincia_existe(arbol2,provincia)
+				cod=get_cod_prov(arbol2,provincia)
+				dict1=dict_radar(arbol1,arbol2,cod)
+				list_radar(dict1)
+	if opcion==2:
+		
+	if opcion==3:
+		
+	if opcion==4:
+		
+	if opcion==5:
+		
+	opcion=menuxml()
 
 
-https://www.google.es/maps/dir/37.282015,-5.9381587/37.2709883,-5.9294977
+
+
+
+
+#https://www.google.es/maps/dir/37.282015,-5.9381587/37.2709883,-5.9294977
 

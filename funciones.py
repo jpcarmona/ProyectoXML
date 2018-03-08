@@ -1,14 +1,5 @@
-# Menu
 
-def menuxml():
-	print("""Elija una opción de las siguientes 5 (\"0\" para salir)\n
-1.Listar radares de una provincia.
-2.Contar radares que tiene una provincia.
-3.Muestra los radares y las provincias por las que pasa una carretera.
-4.Muestra el radar dada una provincia y carretera.
-5.Muestra los radares de una carretera.\n""")
-	opcion=input("Opcion: ")
-	return opcion
+#1.Listar ciudades y radares
 
 # Si existe provincia
 
@@ -33,7 +24,7 @@ def get_cod_prov(arbol,provincia):
 	codprov=arbol.xpath('/provincias/provincia[contains(text(),"{}")]/@id'.format(provincia))
 	return codprov[0]
 
-#1.Listar ciudades y radares
+# Creamos diccionario de provincias y radares
 
 def dict_radar(arbol1,arbol2,codigo):
 	"""Dado el arbol1(lxml.etree)
@@ -63,6 +54,8 @@ def dict_radar(arbol1,arbol2,codigo):
 		dict1[nomprov][carretera]["PF"]["LON"]=pflon[0]
 	return dict1
 
+# listamos provincias y radares
+
 def list_radar(dict1):
 	"""Dado dict1(dict)
 	devuelve una salida"""
@@ -80,6 +73,16 @@ def list_radar(dict1):
 			print("")
 		print("")
 
+# Ejecucion final opcion1
+
+def opcion1(provincia,arbol1,arbol2):
+	if not provincia_existe(arbol2,provincia):
+		print("No existe la provincia, inténtelo de nuevo")
+	else:
+		prov=provincia_existe(arbol2,provincia)
+		cod=get_cod_prov(arbol2,prov)
+		dict1=dict_radar(arbol1,arbol2,cod)
+		list_radar(dict1)
 
 #2.Contar ciudades y radares
 
@@ -88,3 +91,42 @@ def list_radar(dict1):
 #4.Buscar una ciudad y muestra sus radares, Busca una carretera y muestra sus radares
 
 #5.Mostrar las coordenadas de los radares que tienen una carretera
+
+# Menu 1
+
+def menu1(arbol1,arbol2):
+	provincia=input("¿Provincia?(\"0\" para volver): ")
+	while provincia!="0":
+		opcion1(provincia,arbol1,arbol2)
+		provincia=input("¿Provincia?(\"0\" para volver): ")
+	exit
+# Menu Principal texto
+
+def menuxml():
+	print("""Elija una opción de las siguientes 5 (\"0\" para salir)\n
+1.Listar radares de una provincia.
+2.Contar radares que tiene una provincia.
+3.Muestra los radares y las provincias por las que pasa una carretera.
+4.Muestra el radar de una provincia y una carretera.
+5.Muestra los radares de una carretera.\n""")
+	opcion=input("Opcion: ")
+	return opcion
+
+# Menu Principal
+
+def menu(arbol1,arbol2):
+	opcion=menuxml()
+	while opcion!="0":
+		if opcion=="1":
+			menu1(arbol1,arbol2)
+		if opcion=="2":
+			print("opcion2")
+		if opcion=="3":
+			print("opcion3")
+		if opcion=="4":
+			print("opcion4")
+		if opcion=="5":
+			print("opcion5")
+		if opcion not in ["1","2","3","4","5"]:
+			print("Por favor elija una opcion correcta")
+		opcion=menuxml()

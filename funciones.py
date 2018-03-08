@@ -1,3 +1,5 @@
+import os
+### EXISTENCIAS #########################################################################
 
 # Si existe provincia
 
@@ -25,6 +27,8 @@ def carretera_existe(arbol,carretera):
 			return carre
 	return False 
 
+### VARIOS #############################################################################
+
 # Lista de carreteras
 
 def list_carre(arbol):
@@ -48,6 +52,8 @@ def get_cod_prov(arbol,provincia):
 	codprov=arbol.xpath('/provincias/provincia[contains(text(),"{}")]/@id'.format(provincia))
 	return codprov[0]
 
+### CREACION DE DICCIONARIOS CON XML ###################################################
+
 # Diccionario de provincia y radares
 
 def dict_radar(arbol1,arbol2,codigo):
@@ -65,18 +71,48 @@ def dict_radar(arbol1,arbol2,codigo):
 		dict1[nomprov][carretera]["PI"]={}
 		pipk=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/PK/text()'.format(codigo,carretera))
 		dict1[nomprov][carretera]["PI"]["PK"]=pipk[0]
-		pilat=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/LATITUD/text()'.format(codigo,carretera))
-		dict1[nomprov][carretera]["PI"]["LAT"]=pilat[0]
-		pilon=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/LONGITUD/text()'.format(codigo,carretera))
-		dict1[nomprov][carretera]["PI"]["LON"]=pilon[0]
 		dict1[nomprov][carretera]["PF"]={}
 		pfpk=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_FINAL/PK/text()'.format(codigo,carretera))
 		dict1[nomprov][carretera]["PF"]["PK"]=pfpk[0]
-		pflat=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_FINAL/LATITUD/text()'.format(codigo,carretera))
-		dict1[nomprov][carretera]["PF"]["LAT"]=pflat[0]
-		pflon=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_FINAL/LONGITUD/text()'.format(codigo,carretera))
-		dict1[nomprov][carretera]["PF"]["LON"]=pflon[0]
 	return dict1
+
+# Diccionario de provincias y radares dada una carretera
+
+def dict_radar2(carretera,arbol1,arbol2):
+	dict1={}
+	cod_provincia=arbol1.xpath('//CARRETERA[DENOMINACION="{}"]/../NOMBRE/text()'.format(carretera))
+	for cod in cod_provincia:
+		provin=arbol2.xpath('/provincias/provincia[@id="{}"]/text()'.format(cod))
+		prov=provin[0]
+		dict1[prov]={}
+		pipk=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/PK/text()'.format(cod,carretera))
+		dict1[prov]["PIPK"]=[]
+		for i in pipk:
+			dict1[prov]["PIPK"].append(i)
+		pilat=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/LATITUD/text()'.format(cod,carretera))
+		dict1[prov]["PILAT"]=[]
+		for i in pilat:
+			dict1[prov]["PILAT"].append(i)
+		pilon=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/LONGITUD/text()'.format(cod,carretera))
+		dict1[prov]["PILON"]=[]
+		for i in pilon:
+			dict1[prov]["PILON"].append(i)
+		pfpk=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_FINAL/PK/text()'.format(cod,carretera))
+		dict1[prov]["PFPK"]=[]
+		for i in pfpk:
+			dict1[prov]["PFPK"].append(i)
+		pflat=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/LATITUD/text()'.format(cod,carretera))
+		dict1[prov]["PFLAT"]=[]
+		for i in pflat:
+			dict1[prov]["PFLAT"].append(i)
+		pflon=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/LONGITUD/text()'.format(cod,carretera))
+		dict1[prov]["PFLON"]=[]
+		for i in pflon:
+			dict1[prov]["PFLON"].append(i)
+	return dict1
+
+
+### EXISTENCIAS 2 #########################################################################
 
 # Si existe provincia devuelve el diccionario de provincias y radares:
 
@@ -90,30 +126,39 @@ def dictprov(provincia,arbol1,arbol2):
 		dict1=dict_radar(arbol1,arbol2,cod)
 		return dict1
 
-#1.Listar ciudades y radares
+# Si existe carretera devuelve el provincias y radares dada una carretera:
 
-# listamos provincias y radares
+def dictcar(carretera,arbol1,arbol2):
+	if not carretera_existe(arbol1,carretera):
+		print("No existe la carretera, inténtelo de nuevo")
+		return False
+	else:
+		carr=carretera_existe(arbol1,carretera)
+		dict1=dict_radar2(carr,arbol1,arbol2)
+		return dict1
+
+
+### RESULTADOS FINALES DE LAS OPCIONES #####################################################
+
+#1.Listar ciudades y radares
 
 def list_radar(dict1):
 	"""Dado dict1(dict)
 	devuelve una salida"""
 	provincia=list(dict1.keys())[0]
-	print(provincia)
+	print("Radares en la Provincia de {}".format(provincia))
 	print("")
 	for carretera in dict1[provincia].keys():
-		print(carretera)
-		print("")
 		carr=dict1[provincia][carretera]
-		print("Punto Inicial:")
-		print(carr["PI"]["PK"],carr["PI"]["LAT"],carr["PI"]["LON"])
-		print("Punto Final:")
-		print(carr["PF"]["PK"],carr["PF"]["LAT"],carr["PF"]["LON"])
+		pipk=carr["PI"]["PK"]
+		pfpk=carr["PF"]["PK"]
+		print("Radar en carretera {} ".format(carretera))
+		print("Punto Kilometrico Inicial {}".format(round(float(pipk),1)))
+		print("Punto Kilometrico Final {}".format(round(float(pfpk),1)))
 		print("")
 	print("")
 
 #2.Contar ciudades y radares
-
-# listamos provincias y radares
 
 def cont_radar(dict1):
 	"""Dado dict1(dict)
@@ -128,85 +173,114 @@ def cont_radar(dict1):
 
 #3.Provincias por la que pase una carretera y muestre radares
 
-def car_prov(carretera,arbol1,arbol2):
-	dict1={}
-	cod_provincia=arbol1.xpath('//CARRETERA[DENOMINACION="{}}"]/../NOMBRE/text()'.format(carretera))
-	for cod in cod_provincia:
-		dict1[cod]={}
-		pipk=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_INICIAL/PK/text()'.format(cod,carretera))
-		dict1[cod]["PIPK"]=[]
-		for i in pipk:
-			dict1[cod]["PIPK"].append(i)
-		pfpk=arbol1.xpath('//PROVINCIA[NOMBRE="{}"]/CARRETERA[DENOMINACION="{}"]/RADAR/PUNTO_FINAL/PK/text()'.format(cod,carretera))
-		dict1[cod]["PFPK"]=[]
-		for i in pfpk:
-			dict1[cod]["PFPK"].append(i)
-	return dict1
+def list_car(dict1):
+	"""Dado dict1(dict)
+	devuelve una salida"""
+	provincias=list(dict1.keys())
+	for provincia in provincias:
+		print(provincia)
+		print("")
+		num=0
+		for x,y in zip(dict1[provincia]["PIPK"],dict1[provincia]["PFPK"]):
+			num+=1
+			print("Radar {}".format(num))
+			print("Punto Kilometrico Inicial {} y Punto Kilometrico Final {}".format(round(float(x),1),round(float(y),1)))
+		print("")
 
 #4.Buscar una Provincia y muestra sus radares, Busca una carretera y muestra sus radares
 
+def list_rad(dict1,provincia):
+	"""Dado dict1(dict)
+	y provincia(str)
+	devuelve una salida"""
+	provincias=list(dict1.keys())
+	for prov in provincias:
+		if prov==provincia:
+			num=0
+			for x,y in zip(dict1[provincia]["PIPK"],dict1[provincia]["PFPK"]):
+				num+=1
+				print("Radar {}".format(num))
+				print("Punto Kilometrico Inicial {} y Punto Kilometrico Final {}".format(round(float(x),1),round(float(y),1)))
+			print("")		
+
+
 #5.Mostrar las coordenadas de los radares que tienen una carretera
+
+def fire_maps(url):
+	urlfull='https://www.google.es/maps/dir/'+url+'data=!4m2!4m1!3e0'
+	os.system("firefox --new-window {} 2> /dev/null".format(urlfull))
+
+def map_rad(dict1):
+	provincias=list(dict1.keys())
+	num=0
+	url=''
+	for provincia in provincias:
+		print(provincia)
+		print("")		
+		for x,y,z,w in zip(dict1[provincia]["PILAT"],dict1[provincia]["PFLAT"],dict1[provincia]["PILON"],dict1[provincia]["PFLON"]):
+			num+=1
+			print("Radar {}".format(num))
+			print("Latitud Inicial {} y Longitud Inicial {}".format(x,z))
+			print("Latitud Final {} y Longitud Final {}".format(y,w))
+			print("")
+			latlon=x+','+z+'/'+y+','+w+'/'
+			url+=latlon
+		print("En total tiene {} Radares".format(num))
+		return url	
+		print("")
+
+#def abrir_maps():	
+
+
+### MENUS ##################################################################################
+
+# Menu Carreteras
+
+def menucar(arbol1,arbol2,opcion,provincia='0'):
+	while True:
+		carretera=input("¿Carretera?(\"0\" para volver): ")
+		print("")
+		if carretera=="0":
+			break
+		if not dictcar(carretera,arbol1,arbol2):
+			continue
+		if opcion=="3":
+			carre=carretera_existe(arbol1,carretera)
+			print("Radares y provincias que pasan por la carretera {}".format(carre))
+			print("")
+			list_car(dictcar(carretera,arbol1,arbol2))
+		if opcion=="4":
+			list_rad(dictcar(carretera,arbol1,arbol2),provincia)
+			break
+		if opcion=="5":
+			carre=carretera_existe(arbol1,carretera)
+			print("Radares que pasan por la carretera {}".format(carre))
+			print("")
+			control=input("Desea abrir firefox y ver los radares: (y/n)")
+			if control=='y':
+				fire_maps(map_rad(dictcar(carretera,arbol1,arbol2)))
+			else:
+				map_rad(dictcar(carretera,arbol1,arbol2))
+		print("")
 
 # Menu Provincias
 
 def menuprov(arbol1,arbol2,opcion):
 	while True:
 		provincia=input("¿Provincia?(\"0\" para volver): ")
+		print("")
 		if provincia=="0":
 			break
 		if not dictprov(provincia,arbol1,arbol2):
 			continue
 		if opcion=="1":
-				list_radar(dictprov(provincia,arbol1,arbol2))
+			list_radar(dictprov(provincia,arbol1,arbol2))
 		if opcion=="2":
-				cont_radar(dictprov(provincia,arbol1,arbol2))
-		if opcion=="4":
-		print("")
-
-# Menu Carreteras
-
-def menucar(arbol1,arbol2,opcion):
-	while True:
-		carretera=input("¿Carretera?(\"0\" para volver): ")
-		if carretera=="0":
-			break
-		if not dictprov(provincia,arbol1,arbol2):
-			continue
-		if opcion=="3":
-				list_radar(dictprov(provincia,arbol1,arbol2))
-		if opcion=="4":
-				cont_radar(dictprov(provincia,arbol1,arbol2))
-		if opcion=="5":
 			cont_radar(dictprov(provincia,arbol1,arbol2))
+		if opcion=="4":
+			prov=provincia_existe(arbol2,provincia)
+			menucar(arbol1,arbol2,opcion,prov)
 		print("")
-
-# Menu 3
-
-def menu3(arbol1,arbol2):
-	provincia=input("¿Provincia?(\"0\" para volver): ")
-	while provincia!="0":
-		opcion1(provincia,arbol1,arbol2)
-		provincia=input("¿Provincia?(\"0\" para volver): ")
-	exit
-
-# Menu 4
-
-def menu4(arbol1,arbol2):
-	provincia=input("¿Provincia?(\"0\" para volver): ")
-	while provincia!="0":
-		opcion1(provincia,arbol1,arbol2)
-		provincia=input("¿Provincia?(\"0\" para volver): ")
-	exit
-
-# Menu 5
-
-def menu5(arbol1,arbol2):
-	provincia=input("¿Provincia?(\"0\" para volver): ")
-	while provincia!="0":
-		opcion1(provincia,arbol1,arbol2)
-		provincia=input("¿Provincia?(\"0\" para volver): ")
-	exit
-
 
 # Menu Principal texto
 
@@ -230,11 +304,13 @@ def menu(arbol1,arbol2):
 		if opcion=="2":
 			menuprov(arbol1,arbol2,opcion)
 		if opcion=="3":
-			menu3(arbol1,arbol2)
+			menucar(arbol1,arbol2,opcion)
 		if opcion=="4":
-			menu4(arbol1,arbol2)
+			print("Elija Provincia y Carretera:")
+			print("")
+			menuprov(arbol1,arbol2,opcion)
 		if opcion=="5":
-			menu5(arbol1,arbol2)
+			menucar(arbol1,arbol2,opcion)
 		if opcion not in ["1","2","3","4","5"]:
 			print("Por favor elija una opcion correcta")
 		opcion=menuxml()
